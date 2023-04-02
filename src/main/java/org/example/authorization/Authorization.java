@@ -1,6 +1,5 @@
 package org.example.authorization;
 
-import org.example.authorization.domain.User;
 import org.example.authorization.service.UserServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +24,6 @@ public class Authorization {
         String username = credentials[0];
         String password = credentials[1];
 
-        User user = userService.findUserByNameAndPassword(username, password);
-
-        return user != null;
+        return userService.countUsersByNameAndPassword(username, password) == 1;
     }
 }

@@ -7,10 +7,14 @@ import java.util.Enumeration;
 import java.util.Map;
 
 public class Logger {
-    private final org.slf4j.Logger logger;
+    private org.slf4j.Logger logger;
 
     public Logger() {
         this.logger = org.slf4j.LoggerFactory.getLogger(Logger.class);
+    }
+
+    public Logger(org.slf4j.Logger logger) {
+        this.logger = logger;
     }
 
     public void log(String info){

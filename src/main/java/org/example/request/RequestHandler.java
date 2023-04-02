@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class RequestHandler {
-    public static final String MESSAGE = "Hello World";
+    private static final String MESSAGE = "Hello World";
 
     public void makeRequest(HttpServletRequest req, HttpServletResponse resp, Logger logger) throws IOException {
             String method = req.getMethod();
