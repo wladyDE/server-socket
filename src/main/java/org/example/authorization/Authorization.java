@@ -1,9 +1,11 @@
 package org.example.authorization;
 
+import org.example.authorization.domain.User;
 import org.example.authorization.service.UserServiceImpl;
+import org.example.authorization.utils.BasicAuthDecoder;
+import org.example.authorization.utils.PasswordHasher;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Base64;
 
 public class Authorization {
 
@@ -13,17 +15,25 @@ public class Authorization {
             return false;
         }
 
-        String encodedCredentials = authHeader.substring("Basic ".length()).trim();
-        String decodedCredentials = new String(Base64.getDecoder().decode(encodedCredentials));
+        String decodedCredentials = BasicAuthDecoder.decodeBasicAuth(authHeader);
 
         String[] credentials = decodedCredentials.split(":");
         if (credentials.length != 2) {
             return false;
         }
 
-        String username = credentials[0];
-        String password = credentials[1];
+        String login = credentials[0];
+        String password = PasswordHasher.hashPassword(credentials[1], login);
 
-        return userService.countUsersByNameAndPassword(username, password) == 1;
+        return authenticate(login, password, userService);
+    }
+
+    private boolean authenticate(String login, String password, UserServiceImpl userService) {
+        User user = userService.findByLogin(login);
+        if (user == null) {
+            return false;
+        } else {
+            return PasswordHasher.verifyPassword(password, user.getPassword());
+        }
     }
 }

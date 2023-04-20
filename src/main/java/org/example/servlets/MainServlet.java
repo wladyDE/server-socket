@@ -1,4 +1,4 @@
-package org.example;
+package org.example.servlets;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;

@@ -23,7 +23,7 @@ public class User {
     @Version
     int version;
 
-    String name;
+    String login;
 
     String password;
 }

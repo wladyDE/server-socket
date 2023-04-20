@@ -1,13 +1,17 @@
 package org.example.log;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class Logger {
-    private org.slf4j.Logger logger;
+    org.slf4j.Logger logger;
 
     public Logger() {
         this.logger = org.slf4j.LoggerFactory.getLogger(Logger.class);
