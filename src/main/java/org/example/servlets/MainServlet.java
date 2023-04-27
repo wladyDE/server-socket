@@ -2,7 +2,7 @@ package org.example.servlets;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.example.authorization.Authorization;
+import org.example.authorization.Authentication;
 import org.example.authorization.service.UserServiceImpl;
 import org.example.log.Logger;
 import org.example.request.RequestHandler;
@@ -19,7 +19,7 @@ import java.io.IOException;
 public class MainServlet extends HttpServlet {
     RequestHandler requestHandler = new RequestHandler();
 
-    Authorization authorization = new Authorization();
+    Authentication authentication = new Authentication();
 
     Logger logger = new Logger();
 
@@ -27,7 +27,7 @@ public class MainServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (!authorization.isAuthorized(req, userService)) {
+        if (!authentication.isAuthenticated(req, userService)) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.getWriter().write("Unauthorized");
             return;
@@ -38,7 +38,7 @@ public class MainServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (!authorization.isAuthorized(req, userService)) {
+        if (!authentication.isAuthenticated(req, userService)) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.getWriter().write("Unauthorized");
             return;
@@ -49,7 +49,7 @@ public class MainServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (!authorization.isAuthorized(req, userService)) {
+        if (!authentication.isAuthenticated(req, userService)) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.getWriter().write("Unauthorized");
             return;
@@ -60,7 +60,7 @@ public class MainServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (!authorization.isAuthorized(req, userService)) {
+        if (!authentication.isAuthenticated(req, userService)) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.getWriter().write("Unauthorized");
             return;

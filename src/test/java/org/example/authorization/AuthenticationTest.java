@@ -2,7 +2,6 @@ package org.example.authorization;
 
 import org.example.authorization.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -11,26 +10,22 @@ import org.mockito.quality.Strictness;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-class AuthorizationTest {
+class AuthenticationTest {
     @Mock
     UserServiceImpl userService;
 
     @Mock
     HttpServletRequest req;
 
-    private Authorization authorization;
+    private Authentication authentication;
 
     @BeforeEach
     void setUp() {
 
 
-        authorization = new Authorization();
+        authentication = new Authentication();
     }
 
 /*    @Test

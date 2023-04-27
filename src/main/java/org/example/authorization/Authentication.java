@@ -7,9 +7,9 @@ import org.example.authorization.utils.PasswordHasher;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class Authorization {
+public class Authentication {
 
-    public boolean isAuthorized(HttpServletRequest req, UserServiceImpl userService) {
+    public boolean isAuthenticated(HttpServletRequest req, UserServiceImpl userService) {
         String authHeader = req.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Basic ")) {
             return false;
