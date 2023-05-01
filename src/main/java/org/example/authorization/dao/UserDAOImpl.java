@@ -100,4 +100,33 @@ public class UserDAOImpl {
             return users.get(0);
         }
     }
+
+    public long countUserByLogin(String login) {
+        EntityManager em = FACTORY.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+
+        Query query = em.createQuery("SELECT COUNT(u) FROM User u WHERE u.login = :login");
+        query.setParameter("login", login);
+        long count = (long) query.getSingleResult();
+
+        transaction.commit();
+        em.close();
+
+        return count;
+    }
+
+    public long countAllUsers() {
+        EntityManager em = FACTORY.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+
+        Query query = em.createQuery("SELECT COUNT(u) FROM User u");
+        long count = (long) query.getSingleResult();
+
+        transaction.commit();
+        em.close();
+
+        return count;
+    }
 }

@@ -41,4 +41,8 @@ public class UserServiceImpl {
     public User findByLogin (String login) {
         return userDAO.findByLogin(login);
     }
+
+    public Long countUserByLogin(String login){return userDAO.countUserByLogin(login);}
+
+    public Long countAllUsers(){return userDAO.countAllUsers();}
 }
