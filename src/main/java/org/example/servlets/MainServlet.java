@@ -18,54 +18,45 @@ import java.io.IOException;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MainServlet extends HttpServlet {
     RequestHandler requestHandler = new RequestHandler();
-
     Authentication authentication = new Authentication();
-
     Logger logger = new Logger();
-
     UserServiceImpl userService = new UserServiceImpl();
+    static String DEFAULT_COLOR = "\u001B[0m";
+    static String RED_COLOR = "\033[31m";
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (!authentication.isAuthenticated(req, userService)) {
-            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            resp.getWriter().write("Unauthorized");
-            return;
-        }
-
-        requestHandler.makeRequest(req, resp, logger);
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        processRequest(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (!authentication.isAuthenticated(req, userService)) {
-            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            resp.getWriter().write("Unauthorized");
-            return;
-        }
-
-        requestHandler.makeRequest(req, resp, logger);
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+        processRequest(req, resp);
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (!authentication.isAuthenticated(req, userService)) {
-            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            resp.getWriter().write("Unauthorized");
-            return;
-        }
-
-        requestHandler.makeRequest(req, resp, logger);
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
+        processRequest(req, resp);
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (!authentication.isAuthenticated(req, userService)) {
-            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            resp.getWriter().write("Unauthorized");
-            return;
-        }
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+        processRequest(req, resp);
+    }
 
-        requestHandler.makeRequest(req, resp, logger);
+    private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            if (isUserAuthenticated(req, userService)) {
+                requestHandler.makeResponseIfAuthorized(req, resp, logger);
+            } else {
+                requestHandler.makeResponseIfUnauthorized(resp, logger);
+            }
+        } catch (IOException e) {
+            logger.log(RED_COLOR + "IOException occurred" + DEFAULT_COLOR);
+        }
+    }
+
+    private boolean isUserAuthenticated(HttpServletRequest req, UserServiceImpl userService) {
+        return authentication.isAuthenticated(req, userService);
     }
 }

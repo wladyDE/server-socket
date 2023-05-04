@@ -6,6 +6,7 @@ import org.example.authorization.utils.BasicAuthDecoder;
 import org.example.authorization.utils.PasswordHasher;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 public class Authentication {
 
@@ -30,7 +31,7 @@ public class Authentication {
 
     private boolean authenticate(String login, String password, UserServiceImpl userService) {
         User user = userService.findByLogin(login);
-        if (user == null) {
+        if (!Objects.nonNull(user)) {
             return false;
         } else {
             return PasswordHasher.verifyPassword(password, user.getPassword());

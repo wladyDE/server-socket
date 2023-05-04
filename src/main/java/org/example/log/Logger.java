@@ -13,6 +13,9 @@ import java.util.Map;
 public class Logger {
     org.slf4j.Logger logger;
 
+    static String GREEN_COLOR = "\u001B[32m";
+    static String DEFAULT_COLOR = "\u001B[0m";
+
     public Logger() {
         this.logger = org.slf4j.LoggerFactory.getLogger(Logger.class);
     }
@@ -27,7 +30,7 @@ public class Logger {
 
     public void logHeaders(HttpServletRequest req) {
         Enumeration<String> headerNames = req.getHeaderNames();
-        log("Requests headers:");
+        log(GREEN_COLOR + "Requests headers:" + DEFAULT_COLOR);
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             String headerValue = req.getHeader(headerName);
@@ -39,7 +42,7 @@ public class Logger {
         Map<String, String[]> params = req.getParameterMap();
         for (String key : params.keySet()) {
             String value = params.get(key)[0];
-            log(String.format("Request parameter: %s = %s", key, value));
+            log(String.format(GREEN_COLOR + "Request parameter: %s = %s" + DEFAULT_COLOR, key, value));
         }
     }
 
@@ -52,6 +55,6 @@ public class Logger {
         }
         reader.close();
         String requestBody = body.toString();
-        log(String.format("Request body: %s", requestBody));
+        log(String.format(GREEN_COLOR + "Request body: %s" + DEFAULT_COLOR, requestBody));
     }
 }

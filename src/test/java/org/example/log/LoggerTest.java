@@ -31,6 +31,9 @@ class LoggerTest {
 
     private Logger loggerClass;
 
+    private final static String GREEN_COLOR = "\u001B[32m";
+    private final static String DEFAULT_COLOR = "\u001B[0m";
+
     @BeforeEach
     void setUp(){
         loggerClass = new Logger(loggerMock);
@@ -50,7 +53,7 @@ class LoggerTest {
 
         loggerClass.logHeaders(req);
 
-        verify(loggerMock).info("Requests headers:");
+        verify(loggerMock).info(GREEN_COLOR + "Requests headers:" + DEFAULT_COLOR);
         verify(loggerMock).info("header1 : value1");
         verify(loggerMock).info("header2 : value2");
     }
@@ -64,8 +67,8 @@ class LoggerTest {
 
         loggerClass.logParameters(req);
 
-        verify(loggerMock).info("Request parameter: param1 = value1");
-        verify(loggerMock).info("Request parameter: param2 = value2");
+        verify(loggerMock).info(GREEN_COLOR + "Request parameter: param1 = value1" + DEFAULT_COLOR);
+        verify(loggerMock).info(GREEN_COLOR + "Request parameter: param2 = value2" + DEFAULT_COLOR);
     }
 
     @Test
@@ -76,6 +79,6 @@ class LoggerTest {
 
         loggerClass.logBody(req);
 
-        verify(loggerMock).info(String.format("Request body: %s", requestBody));
+        verify(loggerMock).info(String.format(GREEN_COLOR + "Request body: %s" + DEFAULT_COLOR, requestBody));
     }
 }

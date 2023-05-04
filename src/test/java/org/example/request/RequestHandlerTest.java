@@ -25,6 +25,9 @@ class RequestHandlerTest {
     private static final String PATH = "/main";
 
     private static final String MESSAGE = "Hello World";
+    private static final String GREEN_COLOR = "\u001B[32m";
+    private static final String DEFAULT_COLOR = "\u001B[0m";
+    private static final String RED_COLOR = "\033[31m";
 
     @Mock
     private HttpServletRequest req;
@@ -64,13 +67,24 @@ class RequestHandlerTest {
     }
 
     @Test
-    void makeRequestTest() throws IOException {
-        requestHandler.makeRequest(req, resp, logger);
-        verify(logger).log(String.format("Received %s request for %s", METHOD, PATH));
-        verify(logger).log(String.format("Sending HTTP response: %s", MESSAGE));
+    void makeResponseIfAuthorizedTest() throws IOException {
+        requestHandler.makeResponseIfAuthorized(req, resp, logger);
+
+        verify(logger).log(String.format(GREEN_COLOR + "Received %s request for %s" + DEFAULT_COLOR, METHOD, PATH));
+        verify(logger).log(String.format(GREEN_COLOR + "Sending HTTP response: %s" + DEFAULT_COLOR, MESSAGE));
         verify(logger).logParameters(req);
         verify(logger).logBody(req);
         verify(logger).logHeaders(req);
-        verify(logger).log("Response sent");
+        verify(logger).log(GREEN_COLOR + "Response sent" + DEFAULT_COLOR);
+    }
+
+    @Test
+    void makeResponseIfUnauthorizedTest() throws IOException {
+        doNothing().when(resp).setStatus(anyInt());
+        doNothing().when(writer).write(anyString());
+
+        requestHandler.makeResponseIfUnauthorized(resp, logger);
+
+        verify(logger).log(RED_COLOR + "The user does not exist" + DEFAULT_COLOR);
     }
 }
