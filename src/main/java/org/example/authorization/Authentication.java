@@ -1,5 +1,8 @@
 package org.example.authorization;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 import org.example.authorization.domain.User;
 import org.example.authorization.service.UserServiceImpl;
 import org.example.authorization.utils.BasicAuthDecoder;
@@ -8,7 +11,10 @@ import org.example.authorization.utils.PasswordHasher;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
+@Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Authentication {
+    private User user = null;
 
     public boolean isAuthenticated(HttpServletRequest req, UserServiceImpl userService) {
         String authHeader = req.getHeader("Authorization");
@@ -30,7 +36,7 @@ public class Authentication {
     }
 
     private boolean authenticate(String login, String password, UserServiceImpl userService) {
-        User user = userService.findByLogin(login);
+        user = userService.findByLogin(login);
         if (!Objects.nonNull(user)) {
             return false;
         } else {

@@ -2,51 +2,65 @@ package org.example.request;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.example.authorization.Authentication;
+import org.example.authorization.service.UserServiceImpl;
 import org.example.log.Logger;
+import org.example.response.ResponseHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RequestHandler {
+    Authentication authentication = new Authentication();
+
+    UserServiceImpl userService = new UserServiceImpl();
+
     static String MESSAGE = "Hello World";
-    static String GREEN_COLOR = "\u001B[32m";
-    static String DEFAULT_COLOR = "\u001B[0m";
-    static String RED_COLOR = "\033[31m";
 
-    public void makeResponseIfAuthorized(HttpServletRequest req, HttpServletResponse resp, Logger logger) throws IOException {
-            String method = req.getMethod();
-            String path = req.getRequestURI();
+    public void processRequest(HttpServletRequest req, HttpServletResponse resp, Logger logger) throws IOException {
+        logRequest(req, logger);
 
-            logger.log(String.format(GREEN_COLOR + "Received %s request for %s" + DEFAULT_COLOR, method, path));
-            logger.log(String.format(GREEN_COLOR + "Sending HTTP response: %s" + DEFAULT_COLOR, MESSAGE));
-
-            setResponseHeaders(resp);
-
-            PrintWriter writer = resp.getWriter();
-
-            logger.logParameters(req);
-            logger.logBody(req);
-            logger.logHeaders(req);
-
-            writer.print(MESSAGE);
-            writer.flush();
-            writer.close();
-
-            logger.log(GREEN_COLOR + "Response sent" + DEFAULT_COLOR);
+        if (isUserAuthenticated(req, userService)) {
+            makeAuthenticatedResponse(resp, logger);
+        } else {
+            makeUnauthenticatedResponse(resp, logger);
+        }
     }
 
-    public void makeResponseIfUnauthorized(HttpServletResponse resp, Logger logger) throws IOException {
+    private void logRequest(HttpServletRequest req, Logger logger) throws IOException {
+        String method = req.getMethod();
+        String path = req.getRequestURI();
+
+        logger.info(String.format("Received %s request for %s", method, path));
+        logger.logParameters(Parameters.parseParameters(req));
+        logger.logRequestBody(RequestBody.parseBody(req));
+        logger.info("Request Headers:");
+        logger.logHeaders(RequestHeaders.parseRequestHeaders(req));
+    }
+
+    private void makeAuthenticatedResponse(HttpServletResponse resp, Logger logger) throws IOException {
+        logger.info("Authentication found!");
+        logger.info(String.format("Login: %s, Password: %s",
+                authentication.getUser().getLogin(),
+                authentication.getUser().getPassword()));
+
+        ResponseHeaders.setResponseHeaders(resp, MESSAGE);
+        RequestBody.sendBody(resp, MESSAGE);
+        logger.info(String.format("Response Body: %s", MESSAGE));
+        logger.info("Response Headers:");
+        logger.logHeaders(ResponseHeaders.parseHeaders(resp));
+    }
+
+    private void makeUnauthenticatedResponse(HttpServletResponse resp, Logger logger) throws IOException {
         resp.setStatus(401);
         resp.getWriter().write("Unauthorized");
-        logger.log(RED_COLOR + "The user does not exist" + DEFAULT_COLOR);
+        logger.error("No Authentication!");
+        logger.error("The user does not exist!");
     }
 
-    private void setResponseHeaders(HttpServletResponse resp) {
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.setContentType("text/plain");
-        resp.setContentLength(MESSAGE.length());
+    private boolean isUserAuthenticated(HttpServletRequest req, UserServiceImpl userService) {
+        return authentication.isAuthenticated(req, userService);
     }
 }
