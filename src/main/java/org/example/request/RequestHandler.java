@@ -11,11 +11,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RequestHandler {
     Authentication authentication = new Authentication();
 
     UserServiceImpl userService = new UserServiceImpl();
+
+    public RequestHandler() {
+    }
+
+    public RequestHandler(Authentication authentication, UserServiceImpl userService){
+        this.authentication = authentication;
+        this.userService = userService;
+    }
 
     static String MESSAGE = "Hello World";
 

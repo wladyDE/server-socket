@@ -8,31 +8,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class LoggerTest {
-    @Mock
-    private HttpServletRequest req;
 
     @Mock
     private org.slf4j.Logger loggerMock;
 
     private Logger loggerClass;
 
-    private final static String GREEN_COLOR = "\u001B[32m";
-    private final static String DEFAULT_COLOR = "\u001B[0m";
+    static String GREEN_COLOR = "\u001B[32m";
+    static String DEFAULT_COLOR = "\u001B[0m";
+    static String RED_COLOR = "\033[31m";
 
     @BeforeEach
     void setUp(){
@@ -42,43 +34,44 @@ class LoggerTest {
     @Test
     void logTest(){
         loggerClass.info("info");
-        verify(loggerMock).info("info");
+        verify(loggerMock).info(GREEN_COLOR + "info" + DEFAULT_COLOR);
     }
 
-/*    @Test
+    @Test
+    void logErrorTest(){
+        loggerClass.error("info");
+        verify(loggerMock).info(RED_COLOR + "info" + DEFAULT_COLOR);
+    }
+
+    @Test
     void logHeadersTest() {
-        when(req.getHeaderNames()).thenReturn(new Vector<>(Arrays.asList("header1", "header2")).elements());
-        when(req.getHeader("header1")).thenReturn("value1");
-        when(req.getHeader("header2")).thenReturn("value2");
+        Map<String, String> parameterMap = new HashMap<>();
+        parameterMap.put("key", "value");
 
-        loggerClass.logRequestHeaders(req);
+        loggerClass.logHeaders(parameterMap);
 
-        verify(loggerMock).info(GREEN_COLOR + "Requests headers:" + DEFAULT_COLOR);
-        verify(loggerMock).info("header1 : value1");
-        verify(loggerMock).info("header2 : value2");
+        verify(loggerMock).info(GREEN_COLOR + "Header: key = value" + DEFAULT_COLOR);
     }
 
     @Test
-    void logParameters(){
+    void logParametersTest() {
         Map<String, String[]> parameterMap = new HashMap<>();
-        parameterMap.put("param1", new String[]{"value1"});
-        parameterMap.put("param2", new String[]{"value2"});
-        when(req.getParameterMap()).thenReturn(parameterMap);
+        parameterMap.put("key", new String[]{"value"});
 
-        loggerClass.logParameters(req);
+        loggerClass.logParameters(parameterMap);
 
-        verify(loggerMock).info(GREEN_COLOR + "Request parameter: param1 = value1" + DEFAULT_COLOR);
-        verify(loggerMock).info(GREEN_COLOR + "Request parameter: param2 = value2" + DEFAULT_COLOR);
+        verify(loggerMock).info(GREEN_COLOR + "Request parameter: key = value" + DEFAULT_COLOR);
     }
 
     @Test
-    void logBody() throws IOException {
-        String requestBody = "request body";
-        BufferedReader reader = new BufferedReader(new StringReader(requestBody));
-        when(req.getReader()).thenReturn(reader);
+    void logBodyTest_WhenNoBody(){
+        loggerClass.logRequestBody("");
+        verify(loggerMock).info(GREEN_COLOR + "Request body: No Body" + DEFAULT_COLOR);
+    }
 
-        loggerClass.logBody(req);
-
-        verify(loggerMock).info(String.format(GREEN_COLOR + "Request body: %s" + DEFAULT_COLOR, requestBody));
-    }*/
+    @Test
+    void logBodyTest_WhenBodyExists(){
+        loggerClass.logRequestBody("body");
+        verify(loggerMock).info(GREEN_COLOR + "Request body: body" + DEFAULT_COLOR);
+    }
 }
