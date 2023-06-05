@@ -1,4 +1,4 @@
-package org.example.http_request.method;
+package org.example.request.method;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.domain.User;
@@ -37,9 +37,10 @@ public class PostRequest implements Request {
         List<User> users = SERVICE.findAll();
 
         users.forEach(user -> {
-            logger.error(String.format("%s %s %s", user.getId(), user.getLogin(), user.getPassword()));
+            String msg = String.format("%s %s %s\n", user.getId(), user.getLogin(), user.getPassword());
+            logger.error(msg);
             try {
-                resp.getWriter().write(String.format("%s %s %s\n", user.getId(), user.getLogin(), user.getPassword()));
+                resp.getWriter().write(msg);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

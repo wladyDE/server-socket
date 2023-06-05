@@ -1,4 +1,4 @@
-package org.example.http_request.method;
+package org.example.request.method;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

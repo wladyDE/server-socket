@@ -1,16 +1,6 @@
-package org.example.http_request;
-
-import org.example.http_request.request_data.RequestBody;
-import org.junit.jupiter.api.Test;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+package org.example.request;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 class RequestBodyTest {
 /*    @Test

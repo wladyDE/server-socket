@@ -1,4 +1,4 @@
-package org.example.http_request;
+package org.example.request;
 
 import org.example.authentication.Authentication;
 import org.example.service.impl.UserServiceImpl;

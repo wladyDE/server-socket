@@ -2,7 +2,7 @@ package org.example.servlets;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.example.http_request.RequestHandler;
+import org.example.request.RequestHandler;
 import org.example.logger.Logger;
 
 import javax.servlet.annotation.WebServlet;

@@ -1,17 +1,6 @@
-package org.example.http_request;
+package org.example.request;
 
-import org.example.http_request.request_data.RequestHeaders;
-import org.junit.jupiter.api.Test;
-
-import javax.servlet.http.HttpServletRequest;
-
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class RequestHeadersTest {
 

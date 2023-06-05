@@ -1,16 +1,6 @@
-package org.example.http_request;
+package org.example.request;
 
-import org.example.http_request.request_data.Parameters;
-import org.junit.jupiter.api.Test;
-
-import javax.servlet.http.HttpServletRequest;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class ParametersTest {
 /*    @Test

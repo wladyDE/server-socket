@@ -1,21 +1,18 @@
-package org.example.http_request;
+package org.example.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.example.http_request.method.DeleteRequest;
-import org.example.http_request.method.GetRequest;
-import org.example.http_request.method.PostRequest;
-import org.example.http_request.method.PutRequest;
+import org.example.request.method.*;
 
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @ToString
 public class Requests {
-    GetRequest getRequest;
-    PostRequest postRequest;
-    PutRequest putRequest;
-    DeleteRequest deleteRequest;
+    Request getRequest;
+    Request postRequest;
+    Request putRequest;
+    Request deleteRequest;
 
         public Requests() {
             this.getRequest = new GetRequest();

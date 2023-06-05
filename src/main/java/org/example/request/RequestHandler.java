@@ -1,4 +1,4 @@
-package org.example.http_request;
+package org.example.request;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -8,9 +8,10 @@ import org.example.exception.NoAuthenticationException;
 import org.example.exception.NotExistingUserException;
 import org.example.authorization.Authorization;
 import org.example.domain.User;
-import org.example.http_request.request_data.Parameters;
-import org.example.http_request.request_data.RequestBody;
-import org.example.http_request.request_data.RequestHeaders;
+import org.example.request.data.Parameters;
+import org.example.request.data.Parseable;
+import org.example.request.data.RequestBody;
+import org.example.request.data.RequestHeaders;
 import org.example.service.impl.UserServiceImpl;
 import org.example.logger.Logger;
 
@@ -32,7 +33,6 @@ public class RequestHandler {
                     && isUserAuthenticated(req, userService)
                     && isValidAuthorization(req, authentication.getCurrentUser())){
 
-                //logRequestData(req, logger);
                 logAuthenticationData(logger);
 
                 String method = req.getMethod();
@@ -50,9 +50,9 @@ public class RequestHandler {
     }
 
     private void logRequestData(HttpServletRequest req, Logger logger) throws IOException {
-        Parameters p = new Parameters();
-        RequestBody b = new RequestBody();
-        RequestHeaders h = new RequestHeaders();
+        Parseable<Map<String, String[]>> p = new Parameters();
+        Parseable<String> b = new RequestBody();
+        Parseable<Map<String, String> > h = new RequestHeaders();
 
         Map<String, String[]> parameters = p.parse(req);
         String body = b.parse(req);

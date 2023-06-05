@@ -1,4 +1,4 @@
-package org.example.http_request.method;
+package org.example.request.method;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.domain.User;

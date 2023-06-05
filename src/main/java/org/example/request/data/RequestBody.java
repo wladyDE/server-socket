@@ -1,4 +1,4 @@
-package org.example.http_request.request_data;
+package org.example.request.data;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
