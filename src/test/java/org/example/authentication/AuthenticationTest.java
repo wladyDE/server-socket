@@ -1,7 +1,7 @@
 package org.example.authentication;
 
 import org.example.domain.User;
-import org.example.service.impl.UserServiceImpl;
+import org.example.service.impl.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class AuthenticationTest {
     @Mock
-    UserServiceImpl userService;
+    UserService userService;
 
     @Mock
     HttpServletRequest req;
@@ -31,7 +31,7 @@ class AuthenticationTest {
 
     private final static String PASSWORD = "1234";
 
-    @BeforeEach
+/*    @BeforeEach
     void setUp() {
         authentication = new Authentication();
 
@@ -39,7 +39,7 @@ class AuthenticationTest {
                 .login(LOGIN)
                 .password(PASSWORD)
                 .build();
-    }
+    }*/
 
    /* @Test
     void isAuthorizedTest_withCorrectAuth_expectTrue(){

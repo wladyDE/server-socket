@@ -1,7 +1,7 @@
 package org.example.request;
 
 import org.example.authentication.Authentication;
-import org.example.service.impl.UserServiceImpl;
+import org.example.service.impl.UserService;
 import org.example.logger.Logger;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -35,7 +35,7 @@ class RequestHandlerTest {
     private Authentication authentication;
 
     @Mock
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Mock
     private PrintWriter writer;

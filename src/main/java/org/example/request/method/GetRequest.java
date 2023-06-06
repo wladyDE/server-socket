@@ -3,7 +3,7 @@ package org.example.request.method;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.domain.User;
-import org.example.service.impl.UserServiceImpl;
+import org.example.service.impl.UserService;
 import org.example.logger.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,14 +13,45 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GetRequest implements Request {
-    UserServiceImpl SERVICE = new UserServiceImpl();
-    ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private final UserService SERVICE;
+    private final ObjectMapper OBJECT_MAPPER;
+
+    public GetRequest() {
+        this.SERVICE = new UserService();
+        this.OBJECT_MAPPER = new ObjectMapper();
+    }
 
     @Override
-    public void processRequest(HttpServletRequest req, HttpServletResponse resp, Logger logger) {
+    public void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String pathInfo = request.getPathInfo();
+        try {
+            String[] pathParts = pathInfo.split("/");
+            if (pathParts.length == 2 && pathParts[1].matches("\\d+")) {
+                int userId = Integer.parseInt(pathParts[1]);
+
+                findUser(userId, response);
+            } else if(pathParts.length == 2 && pathParts[1].equals("all")){
+                findAllUsers(response);
+            }
+        } catch (Exception e){
+            makeResponse(response);
+        }
+    }
+
+    private void findUser(int id, HttpServletResponse response) throws IOException {
+        User user = SERVICE.findById(id);
+
+        if (user != null){
+            makeResponse(response, user);
+        } else {
+            makeResponse(response);
+        }
+    }
+
+    private void findAllUsers(HttpServletResponse response) {
         List<User> users = SERVICE.findAll();
 
-        List<String> json = users.stream()
+        List<String> usersJSON = users.stream()
                 .map(user -> {
                     try {
                         return OBJECT_MAPPER.writeValueAsString(user);
@@ -31,17 +62,30 @@ public class GetRequest implements Request {
                 })
                 .collect(Collectors.toList());
 
-        makeGetResponse(resp, json, logger);
+        makeResponse(response, usersJSON);
     }
 
-    private void makeGetResponse(HttpServletResponse resp, List<String> users, Logger logger) {
+    private void makeResponse(HttpServletResponse response, List<String> users) {
         users.forEach(user -> {
-            logger.error(user);
+            Logger.error(user);
             try {
-                resp.getWriter().write(user);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                response.getWriter().write(user);
+            } catch (IOException exception) {
+                exception.printStackTrace();
             }
         });
+    }
+
+    private void makeResponse(HttpServletResponse response, User user) throws IOException {
+        String msg = String.format("User found: %s", OBJECT_MAPPER.writeValueAsString(user));
+        Logger.error(msg);
+        response.getWriter().write(msg);
+    }
+
+    private void makeResponse(HttpServletResponse response) throws IOException {
+        String msg = "Not Found!";
+        Logger.error(msg);
+        response.getWriter().write(msg);
+        response.setStatus(404);
     }
 }

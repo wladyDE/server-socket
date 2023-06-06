@@ -7,9 +7,19 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class RequestBody implements Parseable<String> {
+    private final String body;
+
+    public RequestBody(HttpServletRequest request) {
+        try {
+            this.body = parse(request);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
-    public String parse (HttpServletRequest req) throws IOException {
-        BufferedReader reader = req.getReader();
+    public String parse (HttpServletRequest request) throws IOException {
+        BufferedReader reader = request.getReader();
         StringBuilder body = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
@@ -18,8 +28,12 @@ public class RequestBody implements Parseable<String> {
         return body.toString();
     }
 
-    public void sendBody(HttpServletResponse resp, String message) throws IOException {
-        PrintWriter writer = resp.getWriter();
+    public void sendBody(HttpServletResponse response, String message) throws IOException {
+        PrintWriter writer = response.getWriter();
         writer.print(message);
+    }
+
+    public String getBody() {
+        return body;
     }
 }

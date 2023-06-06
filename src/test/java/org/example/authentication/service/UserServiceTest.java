@@ -1,8 +1,8 @@
 package org.example.authentication.service;
 
-import org.example.dao.impl.UserDAOImpl;
+import org.example.dao.impl.UserDAO;
 import org.example.domain.User;
-import org.example.service.impl.UserServiceImpl;
+import org.example.service.impl.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,12 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceImplTest {
+class UserServiceTest {
 
     @Mock
-    private UserDAOImpl userDAO;
+    private UserDAO userDAO;
 
-    private UserServiceImpl userService;
+    private UserService userService;
 
     private final User user = User.builder()
             .login("Wlady")
@@ -29,7 +29,7 @@ class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl(userDAO);
+        userService = new UserService(userDAO);
     }
 
     @Test

@@ -2,21 +2,21 @@ package org.example.service.impl;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.example.dao.impl.UserDAOImpl;
+import org.example.dao.impl.UserDAO;
 import org.example.domain.User;
-import org.example.service.UserService;
+import org.example.service.IUserService;
 
 import java.util.List;
 
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserServiceImpl implements UserService {
-    UserDAOImpl userDAO = new UserDAOImpl();
+public class UserService implements IUserService {
+    UserDAO userDAO = new UserDAO();
 
-    public UserServiceImpl() {
+    public UserService() {
     }
 
-    public UserServiceImpl(UserDAOImpl userDAO) {
+    public UserService(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 

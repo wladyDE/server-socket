@@ -7,5 +7,5 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public interface Request {
-    void processRequest(HttpServletRequest req, HttpServletResponse resp, Logger logger) throws IOException;
+    void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException;
 }

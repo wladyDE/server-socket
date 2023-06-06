@@ -2,15 +2,15 @@ package org.example.service.impl;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.example.dao.impl.RoleDAOImpl;
+import org.example.dao.impl.RoleDAO;
 import org.example.domain.Role;
-import org.example.service.CRUDService;
+import org.example.service.ICRUDService;
 
 import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoleServiceImpl implements CRUDService<Role> {
-    final RoleDAOImpl roleDAO = new RoleDAOImpl();
+public class RoleService implements ICRUDService<Role> {
+    final RoleDAO roleDAO = new RoleDAO();
     
     @Override
     public void save(Role role) {

@@ -2,7 +2,7 @@ package org.example.request.method;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.domain.User;
-import org.example.service.impl.UserServiceImpl;
+import org.example.service.impl.UserService;
 import org.example.logger.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,23 +11,28 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 public class PutRequest implements Request{
-    UserServiceImpl SERVICE = new UserServiceImpl();
-    ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private final UserService SERVICE;
+    private final ObjectMapper OBJECT_MAPPER;
 
-    @Override
-    public void processRequest(HttpServletRequest req, HttpServletResponse resp, Logger logger) throws IOException {
-        BufferedReader reader = req.getReader();
-
-        User user = OBJECT_MAPPER.readValue(reader, User.class);
-
-        SERVICE.update(user);
-
-        makeResponse(resp, logger, user);
+    public PutRequest(){
+        this.SERVICE = new UserService();
+        this.OBJECT_MAPPER = new ObjectMapper();
     }
 
-    private void makeResponse(HttpServletResponse resp, Logger logger, User user) throws IOException {
-        String msg = String.format("The user %s was updated", user.getLogin());
-        logger.error(msg);
-        resp.getWriter().write(msg);
+    @Override
+    public void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        BufferedReader reader = request.getReader();
+
+        User userToUpdate = OBJECT_MAPPER.readValue(reader, User.class);
+
+        SERVICE.update(userToUpdate);
+
+        makeResponse(response, userToUpdate);
+    }
+
+    private void makeResponse(HttpServletResponse response, User userToUpdate) throws IOException {
+        String msg = String.format("The user %s was updated", userToUpdate.getLogin());
+        Logger.error(msg);
+        response.getWriter().write(msg);
     }
 }

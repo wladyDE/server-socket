@@ -1,51 +1,51 @@
 package org.example.authentication;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.experimental.FieldDefaults;
-import org.example.domain.User;
-import org.example.exception.NoAuthenticationException;
-import org.example.exception.NotExistingUserException;
-import org.example.service.impl.UserServiceImpl;
 import org.example.authentication.utils.BasicAuthDecoder;
 import org.example.authentication.utils.PasswordHasher;
+import org.example.domain.User;
+import org.example.domain.UserDTO;
+import org.example.exception.NoAuthenticationException;
+import org.example.exception.NotExistingUserException;
+import org.example.service.IUserService;
+import org.example.service.impl.UserService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Objects;
 
-@Getter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Authentication {
-    User currentUser = null;
+    private final static String AUTHORIZATION = "Authorization";
+    private final static String BASIC = "Basic ";
+    private final IUserService SERVICE;
 
-    public boolean hasAuthentication(HttpServletRequest req) throws NoAuthenticationException {
-        String authHeader = req.getHeader("Authorization");
-        if(authHeader == null || !authHeader.startsWith("Basic ")){
-            throw new NoAuthenticationException();
-        }
-        return true;
+    public Authentication(){
+        this.SERVICE = new UserService();
     }
 
-    public boolean isUserAuthenticated(HttpServletRequest req, UserServiceImpl userService) throws NotExistingUserException {
-        String authHeader = req.getHeader("Authorization");
+    public void validateAuthorizationHeader(HttpServletRequest request) throws NoAuthenticationException {
+        String authHeader = request.getHeader(AUTHORIZATION);
+        if(authHeader == null || !authHeader.startsWith(BASIC)){
+            throw new NoAuthenticationException();
+        }
+    }
+
+    public UserDTO findUser(HttpServletRequest request) throws NotExistingUserException {
+        String authHeader = request.getHeader(AUTHORIZATION);
         String userCredentials = BasicAuthDecoder.decodeBasicAuth(authHeader);
 
         String[] userData = userCredentials.split(":");
         if (userData.length != 2) {
-            return false;
+            throw new NotExistingUserException();
         }
 
         String login = userData[0];
         String password = PasswordHasher.hashPassword(userData[1], login);
 
-        return authenticate(login, password, userService);
-    }
-
-    private boolean authenticate(String login, String password, UserServiceImpl userService) throws NotExistingUserException {
-        currentUser = userService.findByLogin(login);
-        if (!Objects.nonNull(currentUser) || !PasswordHasher.verifyPassword(password, currentUser.getPassword())) {
+        User currentUser = SERVICE.findByLogin(login);
+        if (currentUser == null || !PasswordHasher.verifyPassword(password, currentUser.getPassword())) {
             throw new NotExistingUserException();
         }
-        return true;
+        return UserDTO.builder()
+                .login(currentUser.getLogin())
+                .roles(currentUser.getRoles())
+                .build();
     }
 }
